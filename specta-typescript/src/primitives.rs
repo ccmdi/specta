@@ -402,6 +402,30 @@ pub fn inline(
     Ok(s)
 }
 
+/// Like [`inline`] but shallow: expands only the top-level structure, rendering
+/// any named type encountered inside as a reference instead of its definition.
+///
+/// The same caveats as [`inline`] apply.
+pub fn shallow_inline(
+    exporter: &dyn AsRef<Exporter>,
+    types: &Types,
+    dt: &DataType,
+) -> Result<String, Error> {
+    let mut s = String::new();
+    shallow_inline_datatype(
+        &mut s,
+        exporter.as_ref(),
+        None,
+        types,
+        dt,
+        vec![],
+        None,
+        "",
+        &[],
+    )?;
+    Ok(s)
+}
+
 // This can be used internally to prevent cloning `Typescript` instances.
 // Externally this shouldn't be a concern so we don't expose it.
 pub(crate) fn typedef_internal(

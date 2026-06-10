@@ -888,6 +888,12 @@ impl FrameworkExporter<'_> {
         primitives::inline(self, self.types, &mapped)
     }
 
+    /// [primitives::shallow_inline]
+    pub fn shallow_inline(&self, dt: &DataType) -> Result<String, Error> {
+        let mapped = map_datatype_format(self.format, self.types, dt, &[])?;
+        primitives::shallow_inline(self, self.types, &mapped)
+    }
+
     /// [primitives::reference]
     pub fn reference(&self, r: &Reference) -> Result<String, Error> {
         let mapped = map_datatype_format(
