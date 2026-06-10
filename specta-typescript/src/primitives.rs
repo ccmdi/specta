@@ -402,17 +402,18 @@ pub fn inline(
     Ok(s)
 }
 
-/// Like [`inline`] but shallow: expands only the top-level structure, rendering
-/// any named type encountered inside as a reference instead of its definition.
+/// Like [`inline`] but preserves named references at any depth: anonymous
+/// structure (options, tuples, lists, bare structs) is expanded, while any
+/// named type encountered renders as a reference instead of its definition.
 ///
 /// The same caveats as [`inline`] apply.
-pub fn shallow_inline(
+pub fn render(
     exporter: &dyn AsRef<Exporter>,
     types: &Types,
     dt: &DataType,
 ) -> Result<String, Error> {
     let mut s = String::new();
-    shallow_inline_datatype(
+    datatype(
         &mut s,
         exporter.as_ref(),
         None,
