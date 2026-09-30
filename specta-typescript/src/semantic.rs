@@ -718,12 +718,14 @@ impl Configuration {
                     changed = true;
                 }
 
-                Some((
-                    changed.then_some(DataType::Map(ty)),
+                let runtime = if runtime == item {
+                    js_ident.to_owned()
+                } else {
                     format!(
                         "Object.fromEntries(Object.entries({js_ident}).map(([k,{item}])=>[k,{runtime}]))"
-                    ),
-                ))
+                    )
+                };
+                Some((changed.then_some(DataType::Map(ty)), runtime))
             }
             DataType::List(list) => {
                 let item = "i";
@@ -755,10 +757,13 @@ impl Configuration {
                     js_ident,
                     stack,
                 )?;
-                Some((
-                    next_ty.map(|dt| DataType::Nullable(Box::new(dt))),
-                    format!("{js_ident}==null?{js_ident}:{runtime}"),
-                ))
+                // An inner no-op needs no guard; one would still walk every enclosing container.
+                let runtime = if runtime == js_ident {
+                    runtime
+                } else {
+                    format!("{js_ident}==null?{js_ident}:{runtime}")
+                };
+                Some((next_ty.map(|dt| DataType::Nullable(Box::new(dt))), runtime))
             }
             DataType::Intersection(items) => {
                 let mut ty = items.clone();
