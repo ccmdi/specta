@@ -706,7 +706,7 @@ fn write_generic_parameters(
             let mut rendered_default = String::new();
             let mut default_location = parent_location.to_vec();
             default_location.push(format!("<generic {} default>", generic.name).into());
-            shallow_inline_datatype(
+            datatype(
                 &mut rendered_default,
                 exporter,
                 None,
